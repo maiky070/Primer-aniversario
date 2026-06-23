@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feliz Aniversario ❤️</title>
+    <style>
+        :root {
+            --color-sobre: #8fa882;         /* Verde salvia suave */
+            --color-sobre-oscuro: #738a66;  /* Verde oliva sutil */
+            
+            /* Colores de pergamino de la realeza */
+            --color-carta: #e8cca7;         /* Base beige pergamino */
+            --color-texto: #2e1f11;         /* Sepia / café muy oscuro */
+            --color-corazon: #a07154;       /* Café terracota */
+            --color-borde-real: #8c6a3e;    /* Café dorado/bronce para el marco */
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f2ede4;      
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;       
+            min-height: 100vh;
+            font-family: 'Times New Roman', Times, serif; 
+            overflow-x: hidden;
+            padding: 40px 10px; 
+            box-sizing: border-box;
+            
+            /* Evita que el celular agrande la letra por su cuenta */
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+
+        /* Contenedor principal */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        /* Contenedor del Sobre */
+        .envelope-wrapper {
+            position: relative;
+            width: 380px;
+            height: 250px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            z-index: 5; 
+            max-width: 100%; 
+        }
+
+        .envelope-wrapper:hover {
+            transform: scale(1.02);
+        }
+
+        /* Cuerpo principal del sobre */
+        .envelope {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background-color: var(--color-sobre-oscuro);
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+            overflow: hidden; 
+            z-index: 2;
+        }
+
+        /* Solapa de arriba */
+        .flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 190px solid transparent;
+            border-right: 190px solid transparent;
+            border-top: 130px solid var(--color-sobre);
+            transform-origin: top;
+            transition: transform 0.4s ease 0.1s;
+            z-index: 4;
+        }
+
+        /* Laterales y fondo del sobre */
+        .envelope::before {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 190px solid var(--color-sobre);
+            border-right: 150px solid transparent;
+            border-top: 130px solid transparent;
+            border-bottom: 120px solid var(--color-sobre);
+        }
+
+        .envelope::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+            border-right: 190px solid var(--color-sobre);
+            border-left: 150px solid transparent;
+            border-top: 130px solid transparent;
+            border-bottom: 120px solid var(--color-sobre);
+        }
+
+        /* El corazón central */
+        .heart-btn {
+            position: absolute;
+            top: 110px;
+            left: 175px;
+            width: 34px;
+            height: 34px;
+            background-color: var(--color-corazon);
+            z-index: 6;
+            transform: rotate(-45deg);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+
+        .heart-btn::before, .heart-btn::after {
+            content: "";
+            position: absolute;
+            width: 34px;
+            height: 34px;
+            background-color: var(--color-corazon);
+            border-radius: 50%;
+        }
+
+        .heart-btn::before { top: -17px; left: 0; }
+        .heart-btn::after { left: 17px; top: 0; }
+
+        /* La Carta - INTERIOR DE REALEZA */
+        .letter {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 350px;
+            height: 220px;
+            background: radial-gradient(circle, #f5e4ca 60%, #dbae7b 100%);
+            border-radius: 4px;
+            z-index: 1; 
+            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), height 0.7s ease, width 0.7s ease, left 0.7s ease;
+            padding: 30px 20px; 
+            box-sizing: border-box;
+            overflow: hidden;
+            box-shadow: inset 0 0 25px rgba(94,68,43, 0.25), 0 4px 20px rgba(0,0,0,0.2);
+            
+            /* Marco de la realeza */
+            border: 4px double var(--color-borde-real);
+            outline: 1px solid var(--color-borde-real);
+            outline-offset: -10px;
+        }
+
+        /* Esquinas ornamentales del marco real */
+        .letter::before {
+            content: "❖";
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            color: var(--color-borde-real);
+            font-size: 14px;
+            z-index: 11;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .letter-content {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            text-align: center;
+            color: var(--color-texto);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* --- ANIMACIONES DE APERTURA --- */
+        
+        .envelope-wrapper.open .flap {
+            transform: rotateX(180deg);
+            z-index: 1; 
+        }
+
+        .envelope-wrapper.open .heart-btn {
+            transform: rotate(-45deg) scale(0);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Altura optimizada para albergar cómodamente el texto largo y las 12 fotos */
+        .envelope-wrapper.open .letter {
+            transform: translateY(260px); 
+            z-index: 10; 
+            height: 4200px; 
+            width: 380px;  
+            left: 0px;
+            overflow-y: visible; 
+        }
+
+        @media (max-width: 400px) {
+            .envelope-wrapper.open .letter {
+                width: 340px;
+                left: 20px;
+            }
+        }
+
+        .envelope-wrapper.open .letter::before {
+            opacity: 1;
+            transition: opacity 0.4s ease 0.5s;
+        }
+
+        .envelope-wrapper.open .letter-content {
+            opacity: 1;
+            transition: opacity 0.4s ease 0.5s;
+        }
+
+        /* Estilos del título */
+        .letter h1 {
+            color: var(--color-texto);
+            font-size: 28px; 
+            margin-top: 15px; 
+            margin-bottom: 25px;
+            border-bottom: 1px dashed #ad8b63;
+            padding-bottom: 12px;
+            font-style: italic;
+            font-weight: normal;
+            letter-spacing: 1px;
+            line-height: 1.3; 
+            display: block;
+            width: 100%;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .letter p {
+            line-height: 1.8;
+            font-size: 1.1rem;
+            margin: 15px 0;
+            text-align: justify;
+            text-indent: 15px; 
+            width: 90%;
+        }
+
+        /* ESTILO COLLAGE DE FOTOS LADEADAS INTERCALADAS */
+        .photo-container {
+            width: 190px; 
+            height: 190px;
+            margin: 25px 0;
+            background-color: #fffdf9; /* Marco blanco tipo polaroid */
+            border: 1px solid #d4c3a3;
+            box-shadow: 2px 6px 15px rgba(0,0,0,0.12);
+            box-sizing: border-box;
+            padding: 8px 8px 25px 8px; /* Espaciado inferior clásico */
+            transition: transform 0.4s ease, opacity 0.6s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            
+            /* Oculto al inicio para animación scroll */
+            opacity: 0;
+        }
+
+        /* Impares: Izquierda y rotación horaria negativa */
+        .photo-container:nth-of-type(odd) {
+            align-self: flex-start;
+            margin-left: 10px;
+            transform: translateX(-20px) rotate(-4deg);
+        }
+
+        /* Pares: Derecha y rotación horaria positiva */
+        .photo-container:nth-of-type(even) {
+            align-self: flex-end;
+            margin-right: 10px;
+            transform: translateX(20px) rotate(4deg);
+        }
+
+        /* Revelado con Scroll */
+        .photo-container.visible:nth-of-type(odd) {
+            opacity: 1;
+            transform: translateX(0) rotate(-4deg);
+        }
+
+        .photo-container.visible:nth-of-type(even) {
+            opacity: 1;
+            transform: translateX(0) rotate(4deg);
+        }
+
+        .photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            border: 1px solid #eae1cc;
+            filter: sepia(0.08); 
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        
+        <div class="envelope-wrapper" id="envelopeWrapper">
+            <div class="flap"></div> 
+            <div class="envelope"></div>
+            <div class="heart-btn"></div>
+            
+            <div class="letter">
+                <div class="letter-content">
+                    <h1>Feliz ❤️<br>Aniversario</h1>
+                    
+                    <p>Hoy hace un año me diste el sí cuando te pedí que me dieras el honor de ser tu novio, desde ese día hemos pasado increíbles momentos que quedarán en nuestra memoria siempre.</p>
+                    
+                    <!-- FOTO 1 - Izquierda -->
+                    <div class="photo-container">
+                        <img src="foto1.jpg" alt="Momento 1">
+                    </div>
+                    
+                    <p>Cada día que hemos pasado siendo novios, cada momento que hemos compartido en este último año ha sido fantástico y espero que para ti también. Te has convertido por completo en una de mis más grandes prioridades y en una de mis personas favoritas en todo el mundo, te pienso y te añoro todos los días.</p>
+                    
+                    <!-- FOTO 2 - Derecha -->
+                    <div class="photo-container">
+                        <img src="foto2.jpg" alt="Momento 2">
+                    </div>
+
+                    <p>En todo este año que estuvimos juntos me alegra haber sido partícipe de tu vida y estar ahí contigo en momentos importantes para ti, me alegra enormemente haber podido cooperar en tu cumpleaños 19 y darte un regalo que te gustó.</p>
+
+                    <!-- FOTO 3 - Izquierda -->
+                    <div class="photo-container">
+                        <img src="foto3.jpg" alt="Momento 3">
+                    </div>
+
+                    <p>Ese primer regalo fue el primero de muchos que recibirás de mí, porque ver tu cara en esos momentos cuando recibes un regalo, o cuando te he mandado algo de plata aunque no fuera mucha, pero sabía que la necesitarías en ese momento, me hace muy feliz porque sé que tú lo agradeces de corazón y de forma desinteresada y yo te la doy con todo mi amor y cariño.</p>
+
+                    <!-- FOTO 4 - Derecha -->
+                    <div class="photo-container">
+                        <img src="foto4.jpg" alt="Momento 4">
+                    </div>
+
+                    <p>Nuestra primera navidad fue muy especial para nosotros y también algo difícil porque yo trabajaba hasta muy tarde y eso hizo que habláramos menos, pero todo eso valió la pena cuando pude ir a visitarte a Cali.</p>
+
+                    <!-- FOTO 5 - Izquierda -->
+                    <div class="photo-container">
+                        <img src="foto5.jpg" alt="Momento 5">
+                    </div>
+
+                    <!-- FOTO 6 - Derecha -->
+                    <div class="photo-container">
+                        <img src="foto6.jpg" alt="Momento 6">
+                    </div>
+
+                    <p>Esos dos días que estuve contigo han sido los dos días más maravillosos que he tenido. Cuando te vi por primera vez fue algo increíble, me invadió una sensación de felicidad y gozo que nunca antes había tenido; verte por fin en persona, poder abrazarte y besarte fue maravilloso.</p>
+
+                    <!-- FOTO 7 - Izquierda -->
+                    <div class="photo-container">
+                        <img src="foto7.jpg" alt="Momento 7">
+                    </div>
+
+                    <p>No puedo describir con palabras lo emocionante que fue ese encuentro para mí y poder pasar dos días enteros contigo visitando los centros comerciales, comiendo juntos, besándonos, tomándonos de la mano...</p>
+
+                    <!-- FOTO 8 - Derecha -->
+                    <div class="photo-container">
+                        <img src="foto8.jpg" alt="Momento 8">
+                    </div>
+
+                    <p>Y claro, no podemos olvidar nuestro momento de amor en el motel en donde tuvimos un gran sexo y nos acurrucamos juntitos y tú te dormiste en mi pecho, nos bañamos juntos y luego fuimos al centro comercial.</p>
+
+                    <!-- FOTO 9 - Izquierda -->
+                    <div class="photo-container">
+                        <img src="foto9.jpg" alt="Momento 9">
+                    </div>
+
+                    <p>También recuerdo nuestro momento más cine, cuando en nuestro beso final paramos por un momento el tránsito antes de que tú te subieras al auto para ir a tu universidad y yo subiera al mío en dirección al aeropuerto.</p>
+
+                    <!-- FOTO 10 - Derecha -->
+                    <div class="photo-container">
+                        <img src="foto10.jpg" alt="Momento 10">
+                    </div>
+
+                    <p>Pasamos por muchas cosas en este año: momentos alegres, tristes, muchas emociones intensas; hemos llorado y reído juntos y cada uno de esos momentos nos han enseñado cosas y han hecho que nuestra relación crezca y se afiance cada vez más. Este año ha sido maravilloso y espero que los años que vienen sean aún más maravillosos y emocionantes.</p>
+
+                    <!-- FOTO 11 - Izquierda -->
+                    <div class="photo-container">
+                        <img src="foto11.jpg" alt="Momento 11">
+                    </div>
+
+                    <p>Te lo he dicho muchas veces, pero siempre te lo diré más y más: Te amuuuuuuuuuuuuuuuu mi vida, eres lo más valioso para mí, eres mi familia ahora y no te cambiaría por nadie ni por nada.</p>
+
+                    <!-- FOTO 12 - Derecha -->
+                    <div class="photo-container">
+                        <img src="foto12.jpg" alt="Momento 12">
+                    </div>
+
+                    <p style="text-align: center; font-style: italic; font-weight: bold; margin-top: 30px; font-size: 1.25rem; width: 100%;">
+                        ¡Feliz aniversario mi hermoso, maravilloso y fantástico Novio! ❤️
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const envelope = document.getElementById('envelopeWrapper');
+        const letter = document.querySelector('.letter');
+
+        envelope.addEventListener('click', (e) => {
+            if (e.target.closest('.letter') && envelope.classList.contains('open')) {
+                return;
+            }
+            envelope.classList.toggle('open');
+        });
+
+        // Detector de scroll para revelar las imágenes con animación ladeada
+        const observerOptions = {
+            root: null, 
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.photo-container').forEach(container => {
+            imageObserver.observe(container);
+        });
+    </script>
+
+</body>
+</html>
